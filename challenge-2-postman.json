@@ -1,0 +1,152 @@
+{
+    "info": {
+        "name": "Digital Library Service API",
+        "description": "API Collection for managing book inventory and user borrowing in the Digital Library Service",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_postman_id": "12345-abcde-67890-fghij"
+    },
+    "item": [
+        {
+            "name": "Get All Books",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/books",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "books"]
+                }
+            }
+        },
+        {
+            "name": "Add a New Book",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"Sample Book\",\n    \"author\": \"Author Name\",\n    \"genre\": \"Fiction\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/v1/books",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "books"]
+                }
+            }
+        },
+        {
+            "name": "Update Book Details",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"Updated Book Title\",\n    \"author\": \"Updated Author\",\n    \"genre\": \"Updated Genre\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/v1/books/:id",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "books", ":id"],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Delete Book",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/books/:id",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "books", ":id"],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Borrow Book",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"borrowerId\": \"user123\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/v1/books/:id/borrow",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "books", ":id", "borrow"],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Return Book",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/books/:id/return",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "books", ":id", "return"],
+                    "variable": [
+                        {
+                            "key": "id",
+                            "value": "1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Get Book Recommendations",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/books/recommendations",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "books", "recommendations"]
+                }
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000",
+            "type": "string"
+        }
+    ]
+}
