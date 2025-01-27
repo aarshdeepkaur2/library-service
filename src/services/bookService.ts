@@ -1,4 +1,8 @@
+
+import { Book } from "../models/bookModel.ts";
+=======
 import { Book } from "../models/bookModel";
+
 
 const books: Book[] = [
     {
@@ -24,8 +28,60 @@ const books: Book[] = [
     },
 ];
 
+/**
+ * Mock function to get borrowing counts for genres in the last 6 months.
+ * Returns an object where the key is the genre and the value is the borrow count.
+ */
+const getBorrowCountsLast6Months = (): { [genre: string]: number } => {
+    return {
+        Fiction: 15,
+        Dystopian: 25,
+        Classic: 20,
+    };
+};
+
+/**
+ * Gets all books or filters by the given query parameter.
+ *
+ * @param genre - The genre to filter by or 'popular' for top genres
+ * @returns {Book[]} Filtered books based on the query
+ */
+
+/**
+ * Retrieves books from the top 3 genres based on borrowing data in the last 6 months.
+ * Limits to 10 books per genre.
+ *
+ * @returns {Book[]} Books from the top 3 popular genres
+ */
+const getPopularBooks = (): Book[] => {
+    const borrowCounts = getBorrowCountsLast6Months();
+
+    // Determine the top 3 genres by borrow count
+    const topGenres = Object.entries(borrowCounts)
+        .sort(([, countA], [, countB]) => countB - countA) // Sort genres by borrow count (descending)
+        .slice(0, 3) // Get the top 3 genres
+        .map(([genre]) => genre);
+
+    const popularBooks: Book[] = [];
+
+    // For each top genre, retrieve up to 10 books
+    topGenres.forEach((genre) => {
+        const booksInGenre = books
+            .filter((book) => book.genre === genre)
+            .slice(0, 10); // Limit to 10 books per genre
+
+        popularBooks.push(...booksInGenre);
+    });
+
+    return popularBooks;
+};
+
+export const getAllBooks = (): Book[] => {
+    return books;1
+=======
 export const getAllBooks = (): Book[] => {
     return books;
+
 };
 
 /**
@@ -138,6 +194,7 @@ export const deleteBook = (id: string): boolean => {
  * @throws {Error} When book is not found or is already borrowed
  * @returns {Book} The updated book with borrowing information
  *
+
  */
 export const borrowBook = (id: string, borrowerId: string): Book => {
     const book = books.find((b) => b.id === id);
@@ -162,6 +219,24 @@ export const borrowBook = (id: string, borrowerId: string): Book => {
 };
 
 /**
+ * formation and due date.
+ *
+ * @param id - The ID of the book to return
+ * @throws {Error} When book is not found or is not currently borrowed
+ * @returns {Book} The updated book with borrowing information removed
+ *
+ * @example
+ * const returnedBook = returnBook("123");
+ * console.log(returnedBook.isBorrowed); // false
+ */
+export const returnBook = (id: string): Book => {
+    const book = books.find((b) => b.id === id);
+
+    if (!book) {
+        throw new Error(`Book with ID ${id} not found`);
+    }
+
+=======
  * Marks a book as returned, validates borrowing rules, and calculates penalties if overdue.
  *
  * @param id - The ID of the book to return
@@ -184,10 +259,12 @@ export const returnBook = (id: string, borrowerId: string): Book & { penalty?: n
     }
 
     // If the book is not borrowed, throw an error
+
     if (!book.isBorrowed) {
         throw new Error(`Book with ID ${id} is not currently borrowed`);
     }
 
+=======
     // If the borrower is not the one who borrowed the book, throw an error
     if (book.borrowerId !== borrowerId) {
         throw new Error(`Book with ID ${id} was not borrowed by this user`);
@@ -209,12 +286,17 @@ export const returnBook = (id: string, borrowerId: string): Book & { penalty?: n
     }
 
     // Reset book's borrowing fields
+
     book.isBorrowed = false;
     delete book.borrowerId;
     delete book.dueDate;
 
+
+    return book;
+=======
     // Return book with penalty (if applicable)
     return penalty > 0 ? { ...book, penalty } : book;
+
 };
 
 /**
