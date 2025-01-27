@@ -72,7 +72,12 @@ export const borrowBook = (req: Request, res: Response): void => {
 export const returnBook = (req: Request, res: Response): void => {
     try {
         const { id } = req.params;
+
         const result = bookService.returnBook(id);
+=======
+        const borrowerId = req.body.borrowerId;
+        const result = bookService.returnBook(id, borrowerId);
+
         if (result) {
             res.status(200).json({ message: "Book returned" });
         } else {

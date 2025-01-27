@@ -1,4 +1,8 @@
+
 import { Book } from "../models/bookModel.ts";
+=======
+import { Book } from "../models/bookModel";
+
 
 const books: Book[] = [
     {
@@ -74,6 +78,10 @@ const getPopularBooks = (): Book[] => {
 
 export const getAllBooks = (): Book[] => {
     return books;1
+=======
+export const getAllBooks = (): Book[] => {
+    return books;
+
 };
 
 /**
@@ -186,9 +194,7 @@ export const deleteBook = (id: string): boolean => {
  * @throws {Error} When book is not found or is already borrowed
  * @returns {Book} The updated book with borrowing information
  *
- * @example
- * const borrowedBook = borrowBook("123", "user456");
- * console.log(borrowedBook.dueDate);
+
  */
 export const borrowBook = (id: string, borrowerId: string): Book => {
     const book = books.find((b) => b.id === id);
@@ -213,7 +219,7 @@ export const borrowBook = (id: string, borrowerId: string): Book => {
 };
 
 /**
- * Marks a book as returned, removing borrower information and due date.
+ * formation and due date.
  *
  * @param id - The ID of the book to return
  * @throws {Error} When book is not found or is not currently borrowed
@@ -230,15 +236,67 @@ export const returnBook = (id: string): Book => {
         throw new Error(`Book with ID ${id} not found`);
     }
 
+=======
+ * Marks a book as returned, validates borrowing rules, and calculates penalties if overdue.
+ *
+ * @param id - The ID of the book to return
+ * @param borrowerId - The ID of the user returning the book
+ * @throws {Error} When book is not found, not currently borrowed, or returned by a non-borrower
+ * @returns {Book & { penalty?: number }} The updated book with borrowing information removed and penalty calculated if applicable
+ *
+ * @example
+ * const returnedBook = returnBook("123", "user456");
+ * console.log(returnedBook.isBorrowed); // false
+ * console.log(returnedBook.penalty); // 4 (if 2 days late)
+ */
+export const returnBook = (id: string, borrowerId: string): Book & { penalty?: number } => {
+    // Check if the book exists in the inventory
+    const book = books.find((b) => b.id === id);
+
+    // If no book is found in the inventory, throw an error
+    if (!book) {
+        throw new Error(`Book with ID ${id} not found in the inventory`);
+    }
+
+    // If the book is not borrowed, throw an error
+
     if (!book.isBorrowed) {
         throw new Error(`Book with ID ${id} is not currently borrowed`);
     }
+
+=======
+    // If the borrower is not the one who borrowed the book, throw an error
+    if (book.borrowerId !== borrowerId) {
+        throw new Error(`Book with ID ${id} was not borrowed by this user`);
+    }
+
+    // Check if the book is overdue
+    const dueDate = new Date(book.dueDate!); 
+    const currentDate = new Date();
+    let penalty = 0;
+
+    // Calculate the number of days late
+    const daysLate = Math.ceil((currentDate.getTime() - dueDate.getTime()) / (24 * 60 * 60 * 1000));
+
+    if (daysLate > 0) {
+        // If the book is returned after 14 days, charge a penalty of $2 per day
+        if (daysLate > 14) {
+            penalty = (daysLate - 14) * 2; // $2 per day after 14 days
+        }
+    }
+
+    // Reset book's borrowing fields
 
     book.isBorrowed = false;
     delete book.borrowerId;
     delete book.dueDate;
 
+
     return book;
+=======
+    // Return book with penalty (if applicable)
+    return penalty > 0 ? { ...book, penalty } : book;
+
 };
 
 /**
